@@ -5,12 +5,16 @@ import (
 )
 
 type Field struct {
-	name string
+	name      string
+	anonymous bool
+	exported  bool
 }
 
-func newField(name string) Field {
+func newField(name string, isAnonymous bool, isExported bool) Field {
 	return Field{
-		name: name,
+		name:      name,
+		anonymous: isAnonymous,
+		exported:  isExported,
 	}
 }
 
@@ -27,11 +31,18 @@ func (field Field) GetModifiers() int {
 }
 
 func (field Field) IsPrimitive() bool {
-	return true
+	return false
 }
 
 func (field Field) IsStruct() bool {
-	return true
+	return false
+}
+func (field Field) IsAnonymous() bool {
+	return field.anonymous
+}
+
+func (field Field) IsExported() bool {
+	return field.exported
 }
 
 func (field Field) Get(instance one.One) (one.One, error) {

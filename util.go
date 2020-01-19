@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/codnect/go-one"
 	"reflect"
+	"unicode"
 )
 
 func isPointer(val reflect.Value) bool {
@@ -45,4 +46,12 @@ func setFieldValueByName(instance one.One, fieldName string, value one.One) erro
 		fieldVal.Set(val)
 	}
 	return nil
+}
+
+func isExportedField(structField reflect.StructField) bool {
+	return unicode.IsUpper(rune(structField.Name[0]))
+}
+
+func getNumField(one one.One) int {
+	return getValue(one).NumField()
 }
