@@ -16,23 +16,27 @@ func newType(one one.One) Type {
 }
 
 func (t Type) GetName() string {
-	return getValue(t.one).String()
+	return getType(t.one).String()
 }
 
 func (t Type) GetSimpleName() string {
-	return getValue(t.one).String()
+	return getType(t.one).Name()
+}
+
+func (t Type) GetPackagePath() string {
+	return getType(t.one).PkgPath()
 }
 
 func (t Type) IsPointer() bool {
-	return isPointer(reflect.ValueOf(t.one))
+	return reflect.ValueOf(t.one).Kind() == reflect.Ptr
 }
 
 func (t Type) IsInterface() bool {
-	return isInterface(getValue(t.one))
+	return getValue(t.one).Kind() == reflect.Interface
 }
 
 func (t Type) IsStruct() bool {
-	return isStruct(getValue(t.one))
+	return getValue(t.one).Kind() == reflect.Struct
 }
 
 func (t Type) GetDeclaredFieldByIndex(index int) (Field, bool) {

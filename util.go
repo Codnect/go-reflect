@@ -7,35 +7,27 @@ import (
 	"unicode"
 )
 
-func isPointer(val reflect.Value) bool {
-	return val.Kind() == reflect.Ptr
-}
-
-func isString(val reflect.Value) bool {
-	return val.Kind() == reflect.String
-}
-
-func isStruct(val reflect.Value) bool {
-	return val.Kind() == reflect.Struct
-}
-
-func isInterface(val reflect.Value) bool {
-	return val.Kind() == reflect.Interface
-}
-
 func getValue(one one.One) reflect.Value {
 	val := reflect.ValueOf(one)
-	if isPointer(val) {
+	if val.Kind() == reflect.Ptr {
 		val = val.Elem()
 	}
 	return val
 }
 
+func getType(one one.One) reflect.Type {
+	typ := reflect.TypeOf(one)
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ
+}
+
 func getFieldValueByName(one one.One, fieldName string) (one.One, error) {
 	val := getValue(one)
-	if isStruct(val) {
+	if val.Kind() == reflect.Struct {
 		fieldVal := val.FieldByName(fieldName)
-		if isString(fieldVal) {
+		if fieldVal.Kind() == reflect.String {
 			return fieldVal.String(), nil
 		}
 		return fieldVal.Interface(), nil
@@ -46,7 +38,7 @@ func getFieldValueByName(one one.One, fieldName string) (one.One, error) {
 func setFieldValueByName(instance one.One, fieldName string, value one.One) error {
 	val := getValue(instance)
 	fieldVal := val.FieldByName(fieldName)
-	if isString(fieldVal) {
+	if fieldVal.Kind() == reflect.String {
 		fieldVal.Set(val)
 	}
 	return nil
