@@ -1,15 +1,22 @@
 package reflect
 
-import "github.com/codnect/go-one"
-
 type Type struct {
-	name string
+	name   string
+	fields []Field
 }
 
-func newType(one one.One) *Type {
+func newType() *Type {
 	return &Type{}
 }
 
 func (t *Type) GetName() string {
 	return t.name
+}
+
+func (t *Type) setFields(fields []Field) {
+	t.fields = fields
+}
+
+func (t *Type) GetFields() []Field {
+	return nil
 }
