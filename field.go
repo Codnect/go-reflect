@@ -199,7 +199,7 @@ func (field Field) SetUInt64(instance one.One, value uint64) error {
 }
 
 func (field Field) GetTag(tag Tag) (Tag, error) {
-	return field.GetTagByName(tag.GetName())
+	return field.GetTagByName(tag.GetTagName())
 }
 
 func (field Field) GetTags() []Tag {

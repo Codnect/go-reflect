@@ -3,8 +3,7 @@ package reflect
 import "github.com/codnect/go-one"
 
 type Tag interface {
-	GetName() string
-	GetValue() one.One
+	GetTagName() string
 }
 
 type TaggedElement interface {
@@ -47,7 +46,7 @@ func newFieldTag(name string, value string) FieldTag {
 	}
 }
 
-func (tag FieldTag) GetName() string {
+func (tag FieldTag) GetTagName() string {
 	return tag.name
 }
 
