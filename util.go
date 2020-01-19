@@ -59,3 +59,7 @@ func getStructFieldByName(one one.One, name string) (reflect.StructField, bool) 
 func getStructFieldByIndex(one one.One, index int) reflect.StructField {
 	return getValue(one).Type().Field(index)
 }
+
+func getFieldTagValueByTagName(structField reflect.StructField, tagName string) (value string, ok bool) {
+	return structField.Tag.Lookup(tagName)
+}

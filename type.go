@@ -68,7 +68,7 @@ func (t Type) privateGetField(exportedOnly bool, name string) (Field, bool) {
 	if exportedOnly && !isExported {
 		return Field{}, false
 	}
-	field := newField(structField.Name, structField.Anonymous, isExported)
+	field := newField(structField)
 	return field, true
 }
 
@@ -76,8 +76,7 @@ func (t Type) privateGetFieldByIndex(index int) (Field, bool) {
 	numField := getNumField(t.one)
 	if index >= 0 && index < numField {
 		structField := getStructFieldByIndex(t.one, index)
-		isExported := isExportedField(structField)
-		field := newField(structField.Name, structField.Anonymous, isExported)
+		field := newField(structField)
 		return field, true
 	}
 	return Field{}, false
@@ -91,7 +90,7 @@ func (t Type) privateGetFields(exportedOnly bool) []Field {
 		if exportedOnly && !isExported {
 			continue
 		}
-		field := newField(structField.Name, structField.Anonymous, isExported)
+		field := newField(structField)
 		fields = append(fields, field)
 	}
 	return fields
