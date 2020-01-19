@@ -37,3 +37,12 @@ func getFieldValueByName(one one.One, fieldName string) (one.One, error) {
 	}
 	return nil, errors.New("instance must be only struct")
 }
+
+func setFieldValueByName(instance one.One, fieldName string, value one.One) error {
+	val := getValue(instance)
+	fieldVal := val.FieldByName(fieldName)
+	if isString(fieldVal) {
+		fieldVal.Set(val)
+	}
+	return nil
+}

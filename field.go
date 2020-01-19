@@ -2,7 +2,6 @@ package reflect
 
 import (
 	"github.com/codnect/go-one"
-	"reflect"
 )
 
 type Field struct {
@@ -17,6 +16,14 @@ func newField(name string) Field {
 
 func (field Field) GetName() string {
 	return field.name
+}
+
+func (field Field) GetDeclaringType() *Type {
+	return nil
+}
+
+func (field Field) GetModifiers() int {
+	return 0
 }
 
 func (field Field) IsPrimitive() bool {
@@ -111,70 +118,82 @@ func (field Field) GetUInt64(instance one.One) (uint64, error) {
 	return result.(uint64), err
 }
 
-func (field Field) Set(instance one.One, value one.One) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) Set(instance one.One, value one.One) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetBool(instance one.One, value bool) {
-	getValue(instance).FieldByName(field.name).SetBool(value)
+func (field Field) SetBool(instance one.One, value bool) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetByte(instance one.One, value byte) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetByte(instance one.One, value byte) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetInt8(instance one.One, value int8) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetInt8(instance one.One, value int8) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetShort(instance one.One, value int16) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetShort(instance one.One, value int16) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetInt16(instance one.One, value int16) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetInt16(instance one.One, value int16) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetInt(instance one.One, value int) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetInt(instance one.One, value int) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetInt32(instance one.One, value int32) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetInt32(instance one.One, value int32) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetInt64(instance one.One, value int64) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetInt64(instance one.One, value int64) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetString(instance one.One, value string) {
-	getValue(instance).FieldByName(field.name).SetString(value)
+func (field Field) SetString(instance one.One, value string) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetFloat32(instance one.One, value float32) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetFloat32(instance one.One, value float32) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetFloat64(instance one.One, value float64) {
-	getValue(instance).FieldByName(field.name).SetFloat(value)
+func (field Field) SetFloat64(instance one.One, value float64) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetUint8(instance one.One, value uint8) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetUint8(instance one.One, value uint8) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetUInt16(instance one.One, value uint16) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetUInt16(instance one.One, value uint16) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetUInt(instance one.One, value uint) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetUInt(instance one.One, value uint) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetUInt32(instance one.One, value uint32) {
-	getValue(instance).FieldByName(field.name).Set(reflect.ValueOf(value))
+func (field Field) SetUInt32(instance one.One, value uint32) error {
+	return setFieldValueByName(instance, field.name, value)
 }
 
-func (field Field) SetUInt64(instance one.One, value uint64) {
-	getValue(instance).FieldByName(field.name).SetUint(value)
+func (field Field) SetUInt64(instance one.One, value uint64) error {
+	return setFieldValueByName(instance, field.name, value)
+}
+
+func (field Field) Equals(other one.One) bool {
+	return false
+}
+
+func (field Field) HashCode() int {
+	return 0
+}
+
+func (field Field) String() string {
+	return ""
 }
