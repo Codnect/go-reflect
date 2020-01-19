@@ -2,6 +2,7 @@ package reflect
 
 import (
 	"github.com/codnect/go-one"
+	"reflect"
 )
 
 type Type struct {
@@ -23,15 +24,15 @@ func (t Type) GetSimpleName() string {
 }
 
 func (t Type) IsPointer() bool {
-	return false
+	return isPointer(reflect.ValueOf(t.one))
 }
 
 func (t Type) IsInterface() bool {
-	return false
+	return isInterface(getValue(t.one))
 }
 
 func (t Type) IsStruct() bool {
-	return false
+	return isStruct(getValue(t.one))
 }
 
 func (t Type) GetDeclaredFieldByIndex(index int) (Field, bool) {
@@ -55,8 +56,7 @@ func (t Type) GetDeclaredFields() []Field {
 }
 
 func (t Type) privateGetField(exportedOnly bool, name string) (Field, bool) {
-	val := getValue(t.one)
-	structField, result := val.Type().FieldByName(name)
+	structField, result := getStructFieldByName(t.one, name)
 	if !result {
 		return Field{}, false
 	}
@@ -71,8 +71,7 @@ func (t Type) privateGetField(exportedOnly bool, name string) (Field, bool) {
 func (t Type) privateGetFieldByIndex(index int) (Field, bool) {
 	numField := getNumField(t.one)
 	if index >= 0 && index < numField {
-		val := getValue(t.one)
-		structField := val.Type().Field(index)
+		structField := getStructFieldByIndex(t.one, index)
 		isExported := isExportedField(structField)
 		field := newField(structField.Name, structField.Anonymous, isExported)
 		return field, true
@@ -81,10 +80,9 @@ func (t Type) privateGetFieldByIndex(index int) (Field, bool) {
 }
 
 func (t Type) privateGetFields(exportedOnly bool) []Field {
-	val := getValue(t.one)
 	fields := make([]Field, 0)
-	for index := 0; index < val.NumField(); index++ {
-		structField := val.Type().Field(index)
+	for index := 0; index < getNumField(t.one); index++ {
+		structField := getStructFieldByIndex(t.one, index)
 		isExported := isExportedField(structField)
 		if exportedOnly && !isExported {
 			continue

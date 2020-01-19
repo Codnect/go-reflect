@@ -19,6 +19,10 @@ func isStruct(val reflect.Value) bool {
 	return val.Kind() == reflect.Struct
 }
 
+func isInterface(val reflect.Value) bool {
+	return val.Kind() == reflect.Interface
+}
+
 func getValue(one one.One) reflect.Value {
 	val := reflect.ValueOf(one)
 	if isPointer(val) {
@@ -54,4 +58,12 @@ func isExportedField(structField reflect.StructField) bool {
 
 func getNumField(one one.One) int {
 	return getValue(one).NumField()
+}
+
+func getStructFieldByName(one one.One, name string) (reflect.StructField, bool) {
+	return getValue(one).Type().FieldByName(name)
+}
+
+func getStructFieldByIndex(one one.One, index int) reflect.StructField {
+	return getValue(one).Type().Field(index)
 }
