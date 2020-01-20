@@ -204,20 +204,26 @@ func (field Field) GetTag(tag Tag) (Tag, error) {
 	if _, ok := tag.(FieldTag); ok {
 		return field.GetTagByName(tag.GetTagName())
 	}
+	result, err := field.GetTagByName(tag.GetTagName())
+	if err != nil {
+		return nil, err
+	}
 	if tagParser, ok := tag.(TagValueParser); ok {
-		result, err := field.GetTagByName(tag.GetTagName())
+		err = tagParser.Parse(result.(FieldTag).Value)
 		if err != nil {
 			return nil, err
-		} else {
-			err = tagParser.Parse(result.(FieldTag).Value)
-			if err != nil {
-				return nil, err
-			}
-			return tag, nil
 		}
+		return tag, nil
 	}
-	/* fix... */
-	return nil, nil
+	valueField, ok := getStructFieldByName(tag, "Value")
+	if !ok {
+		return nil, errors.New(fmt.Sprintf("tag must have a variable named 'Value'"))
+	}
+	if !isExportedField(valueField) {
+		return nil, errors.New(fmt.Sprintf("'Value' variable must be exported"))
+	}
+	err = setFieldValueByName(tag, "Value", result)
+	return tag, err
 }
 
 func (field Field) GetTags() []Tag {
