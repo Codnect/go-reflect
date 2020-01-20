@@ -27,6 +27,13 @@ func (t Type) GetPackagePath() string {
 	return getType(t.one).PkgPath()
 }
 
+func (t Type) IsTag() bool {
+	if _, ok := t.one.(Tag); ok {
+		return true
+	}
+	return false
+}
+
 func (t Type) IsPointer() bool {
 	return reflect.ValueOf(t.one).Kind() == reflect.Ptr
 }
@@ -37,6 +44,10 @@ func (t Type) IsInterface() bool {
 
 func (t Type) IsStruct() bool {
 	return getValue(t.one).Kind() == reflect.Struct
+}
+
+func (t Type) IsAssignableTo(p Type) bool {
+	return false
 }
 
 func (t Type) GetDeclaredFieldByIndex(index int) (Field, bool) {

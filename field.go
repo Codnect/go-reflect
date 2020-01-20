@@ -199,7 +199,23 @@ func (field Field) SetUInt64(instance one.One, value uint64) error {
 }
 
 func (field Field) GetTag(tag Tag) (Tag, error) {
-	return field.GetTagByName(tag.GetTagName())
+	if _, ok := tag.(FieldTag); ok {
+		return field.GetTagByName(tag.GetTagName())
+	}
+	if tagParser, ok := tag.(TagValueParser); ok {
+		result, err := field.GetTagByName(tag.GetTagName())
+		if err != nil {
+			return nil, err
+		} else {
+			err = tagParser.Parse(result.(FieldTag).Value)
+			if err != nil {
+				return nil, err
+			}
+			return tag, nil
+		}
+	}
+	/* fix... */
+	return nil, nil
 }
 
 func (field Field) GetTags() []Tag {
@@ -256,7 +272,7 @@ func (field Field) GetTagByName(name string) (Tag, error) {
 		return tag, nil
 	}
 	errText := fmt.Sprintf("Tag named %s not found ", name)
-	return FieldTag{}, errors.New(errText)
+	return nil, errors.New(errText)
 }
 
 func (field Field) Equals(other one.One) bool {

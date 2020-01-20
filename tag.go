@@ -56,11 +56,11 @@ type Json struct {
 	Ignore    bool
 }
 
-func (tag Json) GetTagName() string {
+func (tag *Json) GetTagName() string {
 	return "json"
 }
 
-func (tag Json) Parse(value string) error {
+func (tag *Json) Parse(value string) error {
 	value = strings.Trim(value, " ")
 	if value == "" {
 		return nil
@@ -89,11 +89,11 @@ type Yaml struct {
 	Value string
 }
 
-func (tag Yaml) GetTagName() string {
+func (tag *Yaml) GetTagName() string {
 	return "yaml"
 }
 
-func (tag Yaml) Parse(value string) error {
+func (tag *Yaml) Parse(value string) error {
 	value = strings.Trim(value, " ")
 	tag.Value = value
 	return nil
