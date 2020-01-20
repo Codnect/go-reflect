@@ -1,6 +1,8 @@
 package reflect
 
 import (
+	"errors"
+	"fmt"
 	"github.com/codnect/go-one"
 	"reflect"
 )
@@ -42,6 +44,10 @@ func (t Type) IsInterface() bool {
 	return getType(t.one).Kind() == reflect.Interface
 }
 
+func (t Type) IsSlice() bool {
+	return getType(t.one).Kind() == reflect.Slice
+}
+
 func (t Type) IsStruct() bool {
 	return getValue(t.one).Kind() == reflect.Struct
 }
@@ -50,58 +56,58 @@ func (t Type) IsAssignableTo(p Type) bool {
 	return false
 }
 
-func (t Type) GetDeclaredFieldByIndex(index int) (Field, bool) {
+func (t Type) GetDeclaredFieldByIndex(index int) (Field, error) {
 	return t.privateGetFieldByIndex(index)
 }
 
-func (t Type) GetFieldByName(name string) (Field, bool) {
+func (t Type) GetFieldByName(name string) (Field, error) {
 	return t.privateGetField(true, name)
 }
 
-func (t Type) GetFields() []Field {
+func (t Type) GetFields() ([]Field, error) {
 	return t.privateGetFields(true)
 }
 
-func (t Type) GetDeclaredFieldByName(name string) (Field, bool) {
+func (t Type) GetDeclaredFieldByName(name string) (Field, error) {
 	return t.privateGetField(false, name)
 }
 
-func (t Type) GetDeclaredFields() []Field {
+func (t Type) GetDeclaredFields() ([]Field, error) {
 	return t.privateGetFields(false)
 }
 
-func (t Type) privateGetField(exportedOnly bool, name string) (Field, bool) {
-	if t.IsInterface() {
-		return Field{}, false
+func (t Type) privateGetField(exportedOnly bool, name string) (Field, error) {
+	if !t.IsStruct() {
+		return Field{}, errors.New("struct must only has fields")
 	}
 	structField, result := getStructFieldByName(t.one, name)
 	if !result {
-		return Field{}, false
+		return Field{}, errors.New(fmt.Sprintf("field named %s not found", name))
 	}
 	isExported := isExportedField(structField)
 	if exportedOnly && !isExported {
-		return Field{}, false
+		return Field{}, errors.New(fmt.Sprintf("field named %s is not exported", name))
 	}
 	field := newField(structField)
-	return field, true
+	return field, nil
 }
 
-func (t Type) privateGetFieldByIndex(index int) (Field, bool) {
-	if t.IsInterface() {
-		return Field{}, false
+func (t Type) privateGetFieldByIndex(index int) (Field, error) {
+	if !t.IsStruct() {
+		return Field{}, errors.New("struct must only has fields")
 	}
 	numField := getNumField(t.one)
 	if index >= 0 && index < numField {
 		structField := getStructFieldByIndex(t.one, index)
 		field := newField(structField)
-		return field, true
+		return field, nil
 	}
-	return Field{}, false
+	return Field{}, errors.New(fmt.Sprint("field indexed at %i not found", index))
 }
 
-func (t Type) privateGetFields(exportedOnly bool) []Field {
-	if t.IsInterface() {
-		return []Field{}
+func (t Type) privateGetFields(exportedOnly bool) ([]Field, error) {
+	if !t.IsStruct() {
+		return []Field{}, errors.New("struct must only has fields")
 	}
 	fields := make([]Field, 0)
 	for index := 0; index < getNumField(t.one); index++ {
@@ -113,7 +119,7 @@ func (t Type) privateGetFields(exportedOnly bool) []Field {
 		field := newField(structField)
 		fields = append(fields, field)
 	}
-	return fields
+	return fields, nil
 }
 
 func (t Type) NewInstance() one.One {
