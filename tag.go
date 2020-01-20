@@ -1,5 +1,10 @@
 package reflect
 
+import (
+	"errors"
+	"strings"
+)
+
 type Tag interface {
 	GetTagName() string
 }
@@ -41,6 +46,10 @@ func (tag FieldTag) GetTagName() string {
 	return tag.Name
 }
 
+type TagValueParser interface {
+	Parse(value string) error
+}
+
 type Json struct {
 	Value     string
 	OmitEmpty bool
@@ -51,14 +60,41 @@ func (tag Json) GetTagName() string {
 	return "json"
 }
 
+func (tag Json) Parse(value string) error {
+	value = strings.Trim(value, " ")
+	if value == "" {
+		return nil
+	}
+	result := strings.Split(value, ",")
+	if len(result) == 1 {
+		if strings.Trim(result[0], " ") == "-" {
+			tag.Ignore = true
+		} else {
+			tag.Value = strings.Trim(result[0], " ")
+		}
+	} else if len(result) == 2 {
+		tag.Value = strings.Trim(result[0], " ")
+		if strings.Trim(result[0], " ") == "omitempty" {
+			tag.OmitEmpty = true
+		} else {
+			return errors.New("json tag has wrong format")
+		}
+	} else {
+		return errors.New("json tag has wrong format")
+	}
+	return nil
+}
+
 type Yaml struct {
-	Value     string
-	OmitEmpty bool
-	Ignore    bool
+	Value string
 }
 
 func (tag Yaml) GetTagName() string {
 	return "yaml"
+}
+
+func (tag Yaml) Parse(value string) error {
+	return nil
 }
 
 /*
