@@ -39,7 +39,7 @@ func (t Type) IsPointer() bool {
 }
 
 func (t Type) IsInterface() bool {
-	return getValue(t.one).Kind() == reflect.Interface
+	return getType(t.one).Kind() == reflect.Interface
 }
 
 func (t Type) IsStruct() bool {
@@ -71,6 +71,9 @@ func (t Type) GetDeclaredFields() []Field {
 }
 
 func (t Type) privateGetField(exportedOnly bool, name string) (Field, bool) {
+	if t.IsInterface() {
+		return Field{}, false
+	}
 	structField, result := getStructFieldByName(t.one, name)
 	if !result {
 		return Field{}, false
@@ -84,6 +87,9 @@ func (t Type) privateGetField(exportedOnly bool, name string) (Field, bool) {
 }
 
 func (t Type) privateGetFieldByIndex(index int) (Field, bool) {
+	if t.IsInterface() {
+		return Field{}, false
+	}
 	numField := getNumField(t.one)
 	if index >= 0 && index < numField {
 		structField := getStructFieldByIndex(t.one, index)
@@ -94,6 +100,9 @@ func (t Type) privateGetFieldByIndex(index int) (Field, bool) {
 }
 
 func (t Type) privateGetFields(exportedOnly bool) []Field {
+	if t.IsInterface() {
+		return []Field{}
+	}
 	fields := make([]Field, 0)
 	for index := 0; index < getNumField(t.one); index++ {
 		structField := getStructFieldByIndex(t.one, index)
