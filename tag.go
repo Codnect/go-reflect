@@ -41,6 +41,26 @@ func (tag FieldTag) GetTagName() string {
 	return tag.Name
 }
 
+type Json struct {
+	Value     string
+	OmitEmpty bool
+	Ignore    bool
+}
+
+func (tag Json) GetTagName() string {
+	return "json"
+}
+
+type Yaml struct {
+	Value     string
+	OmitEmpty bool
+	Ignore    bool
+}
+
+func (tag Yaml) GetTagName() string {
+	return "yaml"
+}
+
 /*
 GetBool()
 GetByte()
