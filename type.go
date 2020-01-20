@@ -106,3 +106,11 @@ func (t Type) privateGetFields(exportedOnly bool) []Field {
 	}
 	return fields
 }
+
+func (t Type) NewInstance() one.One {
+	return reflect.New(getType(t.one)).Elem().Interface()
+}
+
+func (t Type) NewInstancePointer() one.One {
+	return reflect.New(getType(t.one)).Interface()
+}
