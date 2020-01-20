@@ -1,7 +1,5 @@
 package reflect
 
-import "github.com/codnect/go-one"
-
 type Tag interface {
 	GetTagName() string
 }
@@ -35,23 +33,12 @@ func (t BaseTaggedElement) IsTagPresentByName(name string) bool {
 }
 
 type FieldTag struct {
-	name  string
-	value string
-}
-
-func newFieldTag(name string, value string) FieldTag {
-	return FieldTag{
-		name:  name,
-		value: value,
-	}
+	Name  string
+	Value string
 }
 
 func (tag FieldTag) GetTagName() string {
-	return tag.name
-}
-
-func (tag FieldTag) GetValue() one.One {
-	return tag.value
+	return tag.Name
 }
 
 /*

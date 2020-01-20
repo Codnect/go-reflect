@@ -243,7 +243,7 @@ func (field Field) GetTags() []Tag {
 			break
 		}
 
-		fieldTag := newFieldTag(name, value)
+		fieldTag := FieldTag{Name: name, Value: value}
 		fieldTags = append(fieldTags, fieldTag)
 	}
 	return fieldTags
@@ -252,7 +252,7 @@ func (field Field) GetTags() []Tag {
 func (field Field) GetTagByName(name string) (Tag, error) {
 	value, ok := getFieldTagValueByTagName(field.structField, name)
 	if ok {
-		tag := newFieldTag(name, value)
+		tag := FieldTag{Name: name, Value: value}
 		return tag, nil
 	}
 	errText := fmt.Sprintf("Tag named %s not found ", name)
