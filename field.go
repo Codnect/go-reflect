@@ -14,9 +14,11 @@ type Field struct {
 }
 
 func newField(structField reflect.StructField) Field {
-	return Field{
+	instance := Field{
 		structField: structField,
 	}
+	instance.BaseTaggedElement = BaseTaggedElement{instance}
+	return instance
 }
 
 func (field Field) GetName() string {
