@@ -94,6 +94,8 @@ func (tag Yaml) GetTagName() string {
 }
 
 func (tag Yaml) Parse(value string) error {
+	value = strings.Trim(value, " ")
+	tag.Value = value
 	return nil
 }
 
