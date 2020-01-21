@@ -60,3 +60,10 @@ func (t Type) StructType() (StructType, bool) {
 	}
 	return newStructType(t.one), true
 }
+
+func (t Type) InterfaceType() (InterfaceType, bool) {
+	if !t.IsInterface() {
+		return InterfaceType{}, false
+	}
+	return newInterfaceType(t.one), true
+}
