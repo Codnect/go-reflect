@@ -48,16 +48,32 @@ func isExportedField(structField reflect.StructField) bool {
 	return unicode.IsUpper(rune(structField.Name[0]))
 }
 
+func isExportedMethod(method reflect.Method) bool {
+	return unicode.IsUpper(rune(method.Name[0]))
+}
+
 func getNumField(one one.One) int {
 	return getValue(one).NumField()
+}
+
+func getNumMethod(one one.One) int {
+	return getValue(one).NumMethod()
 }
 
 func getStructFieldByName(one one.One, name string) (reflect.StructField, bool) {
 	return getValue(one).Type().FieldByName(name)
 }
 
+func getStructMethodByName(one one.One, name string) (reflect.Method, bool) {
+	return getValue(one).Type().MethodByName(name)
+}
+
 func getStructFieldByIndex(one one.One, index int) reflect.StructField {
 	return getValue(one).Type().Field(index)
+}
+
+func getStructMethodByIndex(one one.One, index int) reflect.Method {
+	return getValue(one).Type().Method(index)
 }
 
 func getFieldTagValueByTagName(structField reflect.StructField, tagName string) (value string, ok bool) {
