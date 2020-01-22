@@ -1,53 +1,69 @@
 package reflect
 
 import (
-	"github.com/codnect/go-one"
 	"reflect"
 )
 
 type Type struct {
-	one one.One
+	typ reflect.Type
 }
 
-func newType(one one.One) Type {
+func newType(p reflect.Type) Type {
 	return Type{
-		one: one,
+		typ: p,
 	}
 }
 
 func (t Type) GetName() string {
-	return getType(t.one).String()
+	return t.typ.String()
 }
 
 func (t Type) GetSimpleName() string {
-	return getType(t.one).Name()
+	return t.typ.Name()
 }
 
 func (t Type) GetPackagePath() string {
-	return getType(t.one).PkgPath()
+	return t.typ.PkgPath()
 }
 
 func (t Type) IsTag() bool {
-	if _, ok := t.one.(Tag); ok {
-		return true
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	if typ.Kind() == reflect.Struct {
+		tagType := reflect.TypeOf((*Tag)(nil)).Elem()
+		return typ.Implements(tagType)
 	}
 	return false
 }
 
 func (t Type) IsPointer() bool {
-	return reflect.ValueOf(t.one).Kind() == reflect.Ptr
+	return t.typ.Kind() == reflect.Ptr
 }
 
 func (t Type) IsInterface() bool {
-	return getType(t.one).Kind() == reflect.Interface
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ.Kind() == reflect.Interface
 }
 
 func (t Type) IsSlice() bool {
-	return getType(t.one).Kind() == reflect.Slice
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ.Kind() == reflect.Slice
 }
 
 func (t Type) IsStruct() bool {
-	return getValue(t.one).Kind() == reflect.Struct
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ.Kind() == reflect.Struct
 }
 
 func (t Type) IsAssignableTo(p Type) bool {
@@ -58,12 +74,12 @@ func (t Type) StructType() (StructType, bool) {
 	if !t.IsStruct() {
 		return StructType{}, false
 	}
-	return newStructType(t.one), true
+	return newStructType(t.typ), true
 }
 
 func (t Type) InterfaceType() (InterfaceType, bool) {
 	if !t.IsInterface() {
 		return InterfaceType{}, false
 	}
-	return newInterfaceType(t.one), true
+	return newInterfaceType(t.typ), true
 }

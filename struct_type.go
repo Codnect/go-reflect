@@ -8,12 +8,12 @@ import (
 )
 
 type StructType struct {
-	one one.One
+	typ reflect.Type
 }
 
-func newStructType(one one.One) StructType {
+func newStructType(p reflect.Type) StructType {
 	return StructType{
-		one: one,
+		typ: p,
 	}
 }
 
@@ -25,7 +25,7 @@ func (t StructType) GetFieldByName(name string) (Field, error) {
 	return t.privateGetField(true, name)
 }
 
-func (t StructType) GetFields() ([]Field, error) {
+func (t StructType) GetFields() []Field {
 	return t.privateGetFields(true)
 }
 
@@ -33,12 +33,12 @@ func (t StructType) GetDeclaredFieldByName(name string) (Field, error) {
 	return t.privateGetField(false, name)
 }
 
-func (t StructType) GetDeclaredFields() ([]Field, error) {
+func (t StructType) GetDeclaredFields() []Field {
 	return t.privateGetFields(false)
 }
 
 func (t StructType) privateGetField(exportedOnly bool, name string) (Field, error) {
-	structField, result := getStructFieldByName(t.one, name)
+	structField, result := getStructFieldByName(t.typ, name)
 	if !result {
 		return Field{}, errors.New(fmt.Sprintf("field named %s not found", name))
 	}
@@ -50,19 +50,19 @@ func (t StructType) privateGetField(exportedOnly bool, name string) (Field, erro
 }
 
 func (t StructType) privateGetFieldByIndex(index int) (Field, error) {
-	numField := getNumField(t.one)
+	numField := getStructNumField(t.typ)
 	if index >= 0 && index < numField {
-		structField := getStructFieldByIndex(t.one, index)
+		structField := getStructFieldByIndex(t.typ, index)
 		field := newField(structField)
 		return field, nil
 	}
 	return Field{}, errors.New(fmt.Sprint("field indexed at %i not found", index))
 }
 
-func (t StructType) privateGetFields(exportedOnly bool) ([]Field, error) {
+func (t StructType) privateGetFields(exportedOnly bool) []Field {
 	fields := make([]Field, 0)
-	for index := 0; index < getNumField(t.one); index++ {
-		structField := getStructFieldByIndex(t.one, index)
+	for index := 0; index < getStructNumField(t.typ); index++ {
+		structField := getStructFieldByIndex(t.typ, index)
 		isExported := isExportedField(structField)
 		if exportedOnly && !isExported {
 			continue
@@ -70,16 +70,17 @@ func (t StructType) privateGetFields(exportedOnly bool) ([]Field, error) {
 		field := newField(structField)
 		fields = append(fields, field)
 	}
-	return fields, nil
+	return fields
 }
 
+/*
 func (t StructType) NewInstance() one.One {
 	return reflect.New(getType(t.one)).Elem().Interface()
 }
 
 func (t StructType) NewInstancePointer() one.One {
 	return reflect.New(getType(t.one)).Interface()
-}
+}*/
 
 func (t StructType) GetMethodByName(name string) (Method, error) {
 	return t.privateGetMethod(true, name)
@@ -89,7 +90,7 @@ func (t StructType) GetMethod(parameters ...one.One) (Method, error) {
 	return Method{}, nil
 }
 
-func (t StructType) GetMethods() ([]Method, error) {
+func (t StructType) GetMethods() []Method {
 	return t.privateGetMethods(true)
 }
 
@@ -97,7 +98,7 @@ func (t StructType) GetDeclaredMethodByName(name string) (Method, error) {
 	return t.privateGetMethod(false, name)
 }
 
-func (t StructType) GetDeclaredMethods() ([]Method, error) {
+func (t StructType) GetDeclaredMethods() []Method {
 	return t.privateGetMethods(false)
 }
 
@@ -106,7 +107,7 @@ func (t StructType) GetDeclaredMethod(parameters ...one.One) (Method, error) {
 }
 
 func (t StructType) privateGetMethod(exportedOnly bool, name string) (Method, error) {
-	structMethod, result := getStructMethodByName(t.one, name)
+	structMethod, result := getMethodByName(t.typ, name)
 	if !result {
 		return Method{}, errors.New(fmt.Sprintf("method named %s not found", name))
 	}
@@ -117,15 +118,15 @@ func (t StructType) privateGetMethod(exportedOnly bool, name string) (Method, er
 	return newMethod(structMethod), nil
 }
 
-func (t StructType) privateGetMethods(exportedOnly bool) ([]Method, error) {
+func (t StructType) privateGetMethods(exportedOnly bool) []Method {
 	methods := make([]Method, 0)
-	for index := 0; index < getNumMethod(t.one); index++ {
-		method := getStructMethodByIndex(t.one, index)
+	for index := 0; index < getNumMethod(t.typ); index++ {
+		method := getMethodByIndex(t.typ, index)
 		isExported := isExportedMethod(method)
 		if exportedOnly && !isExported {
 			continue
 		}
 		methods = append(methods, newMethod(method))
 	}
-	return methods, nil
+	return methods
 }

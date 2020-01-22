@@ -3,6 +3,7 @@ package reflect
 import (
 	"errors"
 	"github.com/codnect/go-one"
+	"log"
 	"reflect"
 	"unicode"
 )
@@ -52,30 +53,64 @@ func isExportedMethod(method reflect.Method) bool {
 	return unicode.IsUpper(rune(method.Name[0]))
 }
 
-func getNumField(one one.One) int {
-	return getValue(one).NumField()
+func getStructNumField(typ reflect.Type) int {
+	if typ.Kind() != reflect.Struct {
+		log.Fatal("Type is not struct")
+	}
+	return typ.NumField()
 }
 
-func getNumMethod(one one.One) int {
-	return getValue(one).NumMethod()
+func getNumMethod(typ reflect.Type) int {
+	if typ.Kind() != reflect.Struct && typ.Kind() != reflect.Interface {
+		log.Fatal("Type is not struct or interface")
+	}
+	return typ.NumMethod()
 }
 
-func getStructFieldByName(one one.One, name string) (reflect.StructField, bool) {
-	return getValue(one).Type().FieldByName(name)
+func getStructFieldByName(typ reflect.Type, name string) (reflect.StructField, bool) {
+	if typ.Kind() != reflect.Struct {
+		log.Fatal("Type is not struct")
+	}
+	return typ.FieldByName(name)
 }
 
-func getStructMethodByName(one one.One, name string) (reflect.Method, bool) {
-	return getValue(one).Type().MethodByName(name)
+func getMethodByName(typ reflect.Type, name string) (reflect.Method, bool) {
+	if typ.Kind() != reflect.Struct && typ.Kind() != reflect.Interface {
+		log.Fatal("Type is not struct or interface")
+	}
+	return typ.MethodByName(name)
 }
 
-func getStructFieldByIndex(one one.One, index int) reflect.StructField {
-	return getValue(one).Type().Field(index)
+func getStructFieldByIndex(typ reflect.Type, index int) reflect.StructField {
+	if typ.Kind() != reflect.Struct {
+		log.Fatal("Type is not struct")
+	}
+	return typ.Field(index)
 }
 
-func getStructMethodByIndex(one one.One, index int) reflect.Method {
-	return getValue(one).Type().Method(index)
+func getMethodByIndex(typ reflect.Type, index int) reflect.Method {
+	if typ.Kind() != reflect.Struct && typ.Kind() != reflect.Interface {
+		log.Fatal("Type is not struct or interface")
+	}
+	return typ.Method(index)
 }
 
 func getFieldTagValueByTagName(structField reflect.StructField, tagName string) (value string, ok bool) {
 	return structField.Tag.Lookup(tagName)
+}
+
+func getMethodReturnTypeCount(method reflect.Method) int {
+	return method.Type.NumOut()
+}
+
+func getMethodParameterCount(method reflect.Method) int {
+	return method.Type.NumIn()
+}
+
+func getMethodReturnTypeByIndex(method reflect.Method, index int) reflect.Type {
+	return method.Type.Out(index)
+}
+
+func getMethodParameterByIndex(method reflect.Method, index int) reflect.Type {
+	return method.Type.In(index)
 }

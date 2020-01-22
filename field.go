@@ -215,7 +215,8 @@ func (field Field) GetTag(tag Tag) (Tag, error) {
 		}
 		return tag, nil
 	}
-	valueField, ok := getStructFieldByName(tag, "Value")
+	tagType := reflect.TypeOf(tag)
+	valueField, ok := getStructFieldByName(tagType, "Value")
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("tag must have a variable named 'Value'"))
 	}
