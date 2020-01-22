@@ -114,3 +114,19 @@ func getMethodReturnTypeByIndex(method reflect.Method, index int) reflect.Type {
 func getMethodParameterByIndex(method reflect.Method, index int) reflect.Type {
 	return method.Type.In(index)
 }
+
+func getFunctionReturnTypeCount(method reflect.Type) int {
+	return method.NumOut()
+}
+
+func getFunctionParameterCount(method reflect.Type) int {
+	return method.NumIn()
+}
+
+func getFunctionReturnTypeByIndex(method reflect.Type, index int) reflect.Type {
+	return method.Out(index)
+}
+
+func getFunctionParameterByIndex(method reflect.Type, index int) reflect.Type {
+	return method.In(index)
+}

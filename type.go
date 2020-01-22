@@ -66,20 +66,35 @@ func (t Type) IsStruct() bool {
 	return typ.Kind() == reflect.Struct
 }
 
+func (t Type) IsFunction() bool {
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ.Kind() == reflect.Func
+}
+
 func (t Type) IsAssignableTo(p Type) bool {
 	return false
 }
 
-func (t Type) StructType() (StructType, bool) {
+func (t Type) Struct() (Struct, bool) {
 	if !t.IsStruct() {
-		return StructType{}, false
+		return Struct{}, false
 	}
-	return newStructType(t.typ), true
+	return newStruct(t.typ), true
 }
 
-func (t Type) InterfaceType() (InterfaceType, bool) {
+func (t Type) Interface() (Interface, bool) {
 	if !t.IsInterface() {
-		return InterfaceType{}, false
+		return Interface{}, false
 	}
-	return newInterfaceType(t.typ), true
+	return newInterface(t.typ), true
+}
+
+func (t Type) Function() (Function, bool) {
+	if !t.IsFunction() {
+		return Function{}, false
+	}
+	return Function{}, true
 }
