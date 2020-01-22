@@ -6,6 +6,6 @@ import (
 )
 
 func GetType(one one.One) Type {
-	typ := newType(reflect.TypeOf(one))
+	typ := newType(reflect.TypeOf(one), reflect.ValueOf(one))
 	return typ
 }

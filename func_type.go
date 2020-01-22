@@ -5,42 +5,42 @@ import (
 	"reflect"
 )
 
-type Function struct {
+type FunctionType struct {
 	typ reflect.Type
 }
 
-func newFunction(p reflect.Type) Function {
-	return Function{
+func newFunctionType(p reflect.Type) FunctionType {
+	return FunctionType{
 		typ: p,
 	}
 }
 
-func (f Function) GetReturnTypeCount() int {
+func (f FunctionType) GetReturnTypeCount() int {
 	return getFunctionReturnTypeCount(f.typ)
 }
 
-func (f Function) GetReturnTypes() []Type {
+func (f FunctionType) GetReturnTypes() []Type {
 	types := make([]Type, 0)
 	for index := 0; index < getFunctionReturnTypeCount(f.typ); index++ {
 		returnType := getFunctionParameterByIndex(f.typ, index)
-		types = append(types, newType(returnType))
+		types = append(types, newTypeWithType(returnType))
 	}
 	return types
 }
 
-func (f Function) GetParameterCount() int {
+func (f FunctionType) GetParameterCount() int {
 	return getFunctionParameterCount(f.typ)
 }
 
-func (f Function) GetParameterTypes() []Type {
+func (f FunctionType) GetParameterTypes() []Type {
 	types := make([]Type, 0)
 	for index := 0; index < getFunctionParameterCount(f.typ); index++ {
 		returnType := getFunctionParameterByIndex(f.typ, index)
-		types = append(types, newType(returnType))
+		types = append(types, newTypeWithType(returnType))
 	}
 	return types
 }
 
-func (f Function) Invoke(instance one.One, params ...one.One) one.One {
+func (f FunctionType) Invoke(instance one.One, params ...one.One) one.One {
 	return nil
 }

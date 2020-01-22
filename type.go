@@ -6,11 +6,19 @@ import (
 
 type Type struct {
 	typ reflect.Type
+	val reflect.Value
 }
 
-func newType(p reflect.Type) Type {
+func newType(typ reflect.Type, value reflect.Value) Type {
 	return Type{
-		typ: p,
+		typ: typ,
+		val: value,
+	}
+}
+
+func newTypeWithType(typ reflect.Type) Type {
+	return Type{
+		typ: typ,
 	}
 }
 
@@ -74,27 +82,42 @@ func (t Type) IsFunction() bool {
 	return typ.Kind() == reflect.Func
 }
 
+func (t Type) IsMap() bool {
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ.Kind() == reflect.Map
+}
+
 func (t Type) IsAssignableTo(p Type) bool {
 	return false
 }
 
-func (t Type) Struct() (Struct, bool) {
+func (t Type) StructType() (StructType, bool) {
 	if !t.IsStruct() {
-		return Struct{}, false
+		return StructType{}, false
 	}
-	return newStruct(t.typ), true
+	return newStructType(t.typ), true
 }
 
-func (t Type) Interface() (Interface, bool) {
+func (t Type) InterfaceType() (InterfaceType, bool) {
 	if !t.IsInterface() {
-		return Interface{}, false
+		return InterfaceType{}, false
 	}
-	return newInterface(t.typ), true
+	return newInterfaceType(t.typ), true
 }
 
-func (t Type) Function() (Function, bool) {
+func (t Type) FunctionType() (FunctionType, bool) {
 	if !t.IsFunction() {
-		return Function{}, false
+		return FunctionType{}, false
 	}
-	return Function{}, true
+	return FunctionType{}, true
+}
+
+func (t Type) MapType() (MapType, bool) {
+	if !t.IsMap() {
+		return MapType{}, false
+	}
+	return MapType{}, true
 }

@@ -23,7 +23,7 @@ func (t Method) GetReturnTypes() []Type {
 	types := make([]Type, 0)
 	for index := 0; index < getMethodReturnTypeCount(t.method); index++ {
 		returnType := getMethodReturnTypeByIndex(t.method, index)
-		types = append(types, newType(returnType))
+		types = append(types, newTypeWithType(returnType))
 	}
 	return types
 }
@@ -36,7 +36,7 @@ func (t Method) GetParameterTypes() []Type {
 	types := make([]Type, 0)
 	for index := 0; index < getMethodParameterCount(t.method); index++ {
 		returnType := getMethodParameterByIndex(t.method, index)
-		types = append(types, newType(returnType))
+		types = append(types, newTypeWithType(returnType))
 	}
 	return types
 }
