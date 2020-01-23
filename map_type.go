@@ -13,9 +13,9 @@ func newMapType(p reflect.Type) MapType {
 }
 
 func (t MapType) GetKeyType() Type {
-	return Type{}
+	return newTypeWithType(t.typ.Key())
 }
 
 func (t MapType) GetValueType() Type {
-	return Type{}
+	return newTypeWithType(t.typ.Elem())
 }
