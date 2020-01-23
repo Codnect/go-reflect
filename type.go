@@ -119,5 +119,5 @@ func (t Type) MapType() (MapType, bool) {
 	if !t.IsMap() {
 		return MapType{}, false
 	}
-	return MapType{}, true
+	return newMapType(t.typ), true
 }
