@@ -82,6 +82,14 @@ func (t Type) IsFunction() bool {
 	return typ.Kind() == reflect.Func
 }
 
+func (t Type) IsArray() bool {
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ.Kind() == reflect.Array
+}
+
 func (t Type) IsMap() bool {
 	typ := t.typ
 	if typ.Kind() == reflect.Ptr {
@@ -120,4 +128,11 @@ func (t Type) MapType() (MapType, bool) {
 		return MapType{}, false
 	}
 	return newMapType(t.typ), true
+}
+
+func (t Type) ArrayType() (ArrayType, bool) {
+	if !t.IsArray() {
+		return ArrayType{}, false
+	}
+	return newArrayType(t.typ), true
 }
