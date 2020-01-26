@@ -118,6 +118,14 @@ func (t Type) IsNumber() bool {
 	return false
 }
 
+func (t Type) IsBool() bool {
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ.Kind() == reflect.Bool
+}
+
 func (t Type) IsMap() bool {
 	typ := t.typ
 	if typ.Kind() == reflect.Ptr {
@@ -170,4 +178,11 @@ func (t Type) NumberType() (NumberType, bool) {
 		return NumberType{}, false
 	}
 	return newNumberType(t.typ), true
+}
+
+func (t Type) BoolType() (BoolType, bool) {
+	if !t.IsArray() {
+		return BoolType{}, false
+	}
+	return newBoolType(t.typ), true
 }
