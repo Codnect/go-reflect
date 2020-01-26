@@ -126,6 +126,14 @@ func (t Type) IsBool() bool {
 	return typ.Kind() == reflect.Bool
 }
 
+func (t Type) IsString() bool {
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return typ.Kind() == reflect.String
+}
+
 func (t Type) IsMap() bool {
 	typ := t.typ
 	if typ.Kind() == reflect.Ptr {
