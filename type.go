@@ -203,3 +203,10 @@ func (t Type) BoolType() (BoolType, bool) {
 	}
 	return newBoolType(t.typ), true
 }
+
+func (t Type) SliceType() (SliceType, bool) {
+	if !t.IsSlice() {
+		return SliceType{}, false
+	}
+	return newSliceType(t.typ), true
+}
