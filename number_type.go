@@ -53,3 +53,17 @@ func (t NumberType) IsComplex() bool {
 	kind := typ.Kind()
 	return kind == reflect.Complex64 || kind == reflect.Complex128
 }
+
+func (t NumberType) IntegerType() (IntegerType, bool) {
+	if !t.IsInteger() {
+		return IntegerType{}, false
+	}
+	return newIntegerType(t.typ), true
+}
+
+func (t NumberType) FloatType() (FloatType, bool) {
+	if !t.IsFloat() {
+		return FloatType{}, false
+	}
+	return newFloatType(t.typ), true
+}
