@@ -142,6 +142,15 @@ func (t Type) IsMap() bool {
 	return typ.Kind() == reflect.Map
 }
 
+func (t Type) IsError() bool {
+	typ := t.typ
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	errType := reflect.TypeOf((*error)(nil)).Elem()
+	return typ.Implements(errType)
+}
+
 func (t Type) IsAssignableTo(p Type) bool {
 	return false
 }
