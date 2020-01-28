@@ -53,14 +53,8 @@ func (t Type) GetPackagePath() string {
 
 func (t Type) IsTag() bool {
 	typ := t.typ
-	if typ.Kind() == reflect.Ptr {
-		typ = typ.Elem()
-	}
-	if typ.Kind() == reflect.Struct {
-		tagType := reflect.TypeOf((*Tag)(nil)).Elem()
-		return typ.Implements(tagType)
-	}
-	return false
+	tagType := reflect.TypeOf((*Tag)(nil)).Elem()
+	return typ.Implements(tagType)
 }
 
 func (t Type) IsPointer() bool {
